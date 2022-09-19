@@ -30,10 +30,13 @@
                 <div class="form-group mb-2">
                     <label>Parent Category</label><span class="text-danger"> *</span>
                     <select v-model="p_category" class="form-control"> 
-                        <option value=""></option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                        
+                        <option value="all">Parent Category</option>
+                        <!-- <option value="all">all</option> -->
+                        <option v-for="(categ) in categoriesArr" :key="categ.id">{{categ.name}}</option>
+                            
                     </select>
+
                 </div>
 
 
@@ -52,9 +55,24 @@ export default{
             name: '',
             p_category: '',
             strSuccess: '',
-            strError: ''
+            strError: '',
+            categoriesArr: []
         }
     },
+    created() {
+            this.$axios.get('/sanctum/csrf-cookie').then(response => {
+            
+                this.$axios.get('/api/category')
+                .then(response => {
+                    this.categoriesArr = response.data;
+                    console.log(response.data);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+                });
+         
+        },
     methods: {
         addCategoy(e) {
             this.$axios.get('/sanctum/csrf-cookie').then(response => {

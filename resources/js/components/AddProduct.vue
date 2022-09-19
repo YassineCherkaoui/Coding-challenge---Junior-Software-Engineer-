@@ -48,10 +48,13 @@
                 <div class="form-group mb-2">
                     <label>Categories</label><span class="text-danger"> *</span>
                     <select v-model="categories" class="form-control"> 
-                        <option value=""></option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                        
+                        <option value="">Categories</option>
+                        <option v-for="(categ) in categoriesArr" :key="categ.id">{{categ.name}}</option>
+                            
                     </select>
+
+
                 </div>
 
 
@@ -74,9 +77,24 @@ export default{
             categories: '',
             strSuccess: '',
             strError: '',
-            imgPreview: null
+            imgPreview: null,
+            categoriesArr: []
         }
     },
+    created() {
+            this.$axios.get('/sanctum/csrf-cookie').then(response => {
+            
+                this.$axios.get('/api/category')
+                .then(response => {
+                    this.categoriesArr = response.data;
+                    console.log(response.data);
+                })
+                .catch(function(error) {
+                    console.log(error);
+                });
+                });
+         
+        },
     methods: {
         onChange(e) {
             this.img = e.target.files[0];
